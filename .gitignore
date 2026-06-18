@@ -4,3 +4,5 @@
 *.tfvars
 .terraform.lock.hcl
 crash.log
+plan-output.txt
+tfplan
