@@ -6,3 +6,4 @@
 crash.log
 plan-output.txt
 tfplan
+.external_modules/

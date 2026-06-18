@@ -1,4 +1,5 @@
 module "eks" {
+    #checkov:skip=CKV_TF_1:Using official registry modules pinned by version (CKV_TF_2); commit-hash pinning impractical for registry sources.
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
 
@@ -11,6 +12,7 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
+  cluster_enabled_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
   eks_managed_node_groups = {
     default = {

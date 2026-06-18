@@ -1,4 +1,5 @@
 module "vpc" {
+    #checkov:skip=CKV_TF_1:Using official registry modules pinned by version (CKV_TF_2); commit-hash pinning impractical for registry sources. 
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 5.0"
 

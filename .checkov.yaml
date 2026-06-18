@@ -1,0 +1,29 @@
+# Checkov configuration for eks-project
+# Documents consciously-accepted findings with justification.
+
+directory:
+  - .
+
+download-external-modules: true
+
+# Findings reviewed and accepted, with reasons:
+skip-check:
+  # Public cluster endpoint is intentional for local kubectl access in this
+  # learning environment. In production this would be private or IP-restricted.
+  - CKV_AWS_39  # EKS public endpoint disabled
+  - CKV_AWS_38  # public endpoint not accessible to 0.0.0.0/0
+
+  # 90-day log retention chosen deliberately to control storage cost for a
+  # short-lived learning cluster; 1-year retention not warranted here.
+  - CKV_AWS_338  # CloudWatch log retention >= 1 year
+
+  # Module-internal IAM policy for the VPC CNI plugin; wildcard required for
+  # describe actions and not user-modifiable without forking the module.
+  - CKV_AWS_111  # write access without constraints (cni_ipv6_policy)
+  - CKV_AWS_356  # wildcard resource (cni_ipv6_policy)
+
+  # Verified false positive: the EKS module DOES configure secrets encryption
+  # via a dynamic encryption_config block (KMS key with rotation enabled,
+  # confirmed in terraform plan output). Checkov's static scan cannot resolve
+  # the module's dynamic config, so it under-reports. Encryption is in place.
+  - CKV_AWS_58  # EKS secrets encryption (verified present; static-scan false positive)
