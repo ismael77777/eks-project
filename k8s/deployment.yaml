@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hello-eks
+  namespace: hello-eks
   labels:
     app: hello-eks
 spec:
@@ -14,13 +15,27 @@ spec:
       labels:
         app: hello-eks
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: hello-eks
-          # Replace <ECR_IMAGE_URI> with the image pushed to ECR, e.g.
-          # 504354965837.dkr.ecr.eu-west-2.amazonaws.com/hello-eks:latest
+          # Replace <ECR_IMAGE_URI> with the pushed image, pinned to a
+          # specific tag (not :latest), e.g.
+          # 504354965837.dkr.ecr.eu-west-2.amazonaws.com/hello-eks:v1
           image: <ECR_IMAGE_URI>
           ports:
             - containerPort: 5000
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
           readinessProbe:
             httpGet:
               path: /healthz
@@ -40,4 +55,3 @@ spec:
             limits:
               cpu: "250m"
               memory: "256Mi"
-              

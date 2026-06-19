@@ -21,5 +21,9 @@ EXPOSE 5000
 RUN useradd --create-home appuser
 USER appuser
 
+# Container-level health check (complements the Kubernetes probes).
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
+  CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:5000/healthz')" || exit 1
+
 # Start the app.
 CMD ["python", "app.py"]
