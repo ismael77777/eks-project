@@ -1,0 +1,66 @@
+name: CI
+
+# Runs the quality and security gate on every pull request to main.
+# This is pure continuous integration: it verifies, it does not deploy.
+on:
+  pull_request:
+    branches: [main]
+
+# OIDC needs id-token: write to request the token
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  validate:
+    name: Validate and scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.15.6"
+
+      # Authenticate to AWS with OIDC (no stored keys). Needed because
+      # `terraform init` talks to the S3 backend and `plan` reads AWS.
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_PLAN_ROLE_ARN }}
+          aws-region: eu-west-2
+
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive
+
+      - name: Terraform init
+        run: terraform init
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+
+      - name: TFLint
+        run: tflint --recursive
+
+      # Multi-framework Checkov: Terraform, Kubernetes, AND Dockerfile.
+      # This is the proper home for the Kubernetes suppressions that the
+      # Terraform-only pre-commit hook could not apply. checkov-action reads
+      # .checkov.yaml and applies its skip-check list across all frameworks.
+      # soft_fail: true reports findings without failing the build.
+      # To make the gate blocking instead, set soft_fail: false.
+      - name: Checkov scan
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: .
+          framework: terraform,kubernetes,dockerfile
+          config_file: .checkov.yaml
+          download_external_modules: true
+          soft_fail: true
+
+      - name: Terraform plan
+        run: terraform plan -no-color

@@ -1,0 +1,41 @@
+name: Apply
+
+# Manually triggered only. There is no automatic apply on merge: building the
+# cluster costs money, so applying is a deliberate, human-initiated action.
+# This is continuous *delivery* (always ready to apply, applied on a button
+# press), not continuous *deployment* (which would apply automatically).
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  apply:
+    name: Terraform apply
+    runs-on: ubuntu-latest
+    # The 'production' environment can be configured in GitHub repo settings
+    # with required reviewers, so a human must approve before the role is even
+    # assumed and apply runs. Belt-and-braces on top of the manual trigger.
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.15.6"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_APPLY_ROLE_ARN }}
+          aws-region: eu-west-2
+
+      - name: Terraform init
+        run: terraform init
+
+      - name: Terraform apply
+        run: terraform apply -auto-approve
