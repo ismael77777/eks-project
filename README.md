@@ -144,3 +144,4 @@ This is a learning environment, so cost control is deliberate:
 - [x] Deploy the application to the cluster behind a LoadBalancer Service.
 - [ ] GitHub Actions CI pipeline running Checkov across Terraform, Kubernetes, and Dockerfile frameworks.
 - [ ] Observability stack: Prometheus and Grafana.
+
