@@ -26,7 +26,7 @@ spec:
           # Replace <ECR_IMAGE_URI> with the pushed image, pinned to a
           # specific tag (not :latest), e.g.
           # 504354965837.dkr.ecr.eu-west-2.amazonaws.com/hello-eks:v1
-          image: <ECR_IMAGE_URI>
+          image: 504354965837.dkr.ecr.eu-west-2.amazonaws.com/hello-eks:v2
           ports:
             - containerPort: 5000
           securityContext:

@@ -26,7 +26,7 @@ This project provisions a highly available Kubernetes cluster on AWS EKS entirel
 | Node group | Managed, 2× t3.medium |
 | Autoscaling | min 1 / desired 2 / max 3 |
 | Node placement | Private subnets, two availability zones |
-| State | Local (remote backend planned — see roadmap) |
+| State | Remote — S3 backend with native state locking |
 
 ## Architecture
 
@@ -139,8 +139,8 @@ This is a learning environment, so cost control is deliberate:
 
 ## Roadmap
 
-- [ ] Remote state backend (S3 bucket + DynamoDB lock table), bootstrapped separately.
-- [ ] Containerise a sample application and push to Amazon ECR.
-- [ ] Deploy the application with Helm.
-- [ ] GitHub Actions CI/CD pipeline running the same fmt/validate/lint/scan gate.
+- [x] Remote state backend — S3 bucket with native state locking (`use_lockfile`), bootstrapped separately.
+- [x] Containerise a sample application and push to Amazon ECR.
+- [x] Deploy the application to the cluster behind a LoadBalancer Service.
+- [ ] GitHub Actions CI pipeline running Checkov across Terraform, Kubernetes, and Dockerfile frameworks.
 - [ ] Observability stack: Prometheus and Grafana.
