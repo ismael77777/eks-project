@@ -135,7 +135,7 @@ This is a learning environment, so cost control is deliberate:
 - A single NAT gateway rather than one per AZ.
 - `t3.medium` nodes with a desired count of 2.
 - `terraform destroy` between sessions — the configuration rebuilds the entire environment identically in ~15 minutes, so there is no reason to leave it running idle.
-- An AWS Budget and Cost Anomaly Detection monitor guard against surprise spend.
+- A monthly AWS Budget, defined as code in `bootstrap/budget.tf`, alerts on forecasted and actual spend to guard against a cluster left running.
 
 ## Roadmap
 
