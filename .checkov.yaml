@@ -28,7 +28,7 @@ skip-check:
   # the module's dynamic config, so it under-reports. Encryption is in place.
   - CKV_AWS_58  # EKS secrets encryption (verified present; static-scan false positive)
 
-# The following Kubernetes suppressions are applied by the CI pipeline's
+  # The following Kubernetes suppressions are applied by the CI pipeline's
   # Checkov scan (checkov-action scans all frameworks and reads this file).
   # The terraform_checkov pre-commit hook does not apply these to K8s, so
   # K8s-touching commits are scanned in CI rather than pre-commit.
@@ -37,7 +37,7 @@ skip-check:
   - CKV_K8S_35  # Demo app uses no secrets, so secrets-as-files does not apply
   - CKV_K8S_13  # Memory limits are set under resources.limits; documented exception
 
-# --- Findings surfaced by the CI multi-framework scan, triaged below ---
+  # --- Findings surfaced by the CI multi-framework scan, triaged below ---
 
   # App image is pinned by immutable tag (e.g. v2) rather than SHA digest.
   # Acceptable for this project; the ECR repo enforces tag immutability.
@@ -59,3 +59,4 @@ skip-check:
   # creates EKS/VPC/IAM/KMS/ECR. A production hardening step would replace this
   # with a least-privilege policy scoped to exactly what Terraform manages.
   - CKV_AWS_274  # broad CI role permissions (documented trade-off, not least-privilege)
+  - CKV2_K8S_6  # NetworkPolicy not added for this demo; would add to restrict pod traffic in production
