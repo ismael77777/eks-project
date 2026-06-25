@@ -15,10 +15,11 @@ spec:
       labels:
         app: hello-eks
     spec:
+      automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1000
-        fsGroup: 1000
+        runAsUser: 10000
+        fsGroup: 10000
         seccompProfile:
           type: RuntimeDefault
       containers:
@@ -27,6 +28,7 @@ spec:
           # specific tag (not :latest), e.g.
           # 504354965837.dkr.ecr.eu-west-2.amazonaws.com/hello-eks:v1
           image: 504354965837.dkr.ecr.eu-west-2.amazonaws.com/hello-eks:v2
+          imagePullPolicy: Always
           ports:
             - containerPort: 5000
           securityContext:
