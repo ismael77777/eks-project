@@ -142,6 +142,6 @@ This is a learning environment, so cost control is deliberate:
 - [x] Remote state backend — S3 bucket with native state locking (`use_lockfile`), bootstrapped separately.
 - [x] Containerise a sample application and push to Amazon ECR.
 - [x] Deploy the application to the cluster behind a LoadBalancer Service.
-- [ ] GitHub Actions CI pipeline running Checkov across Terraform, Kubernetes, and Dockerfile frameworks.
+- [x] GitHub Actions CI pipeline running Checkov across Terraform, Kubernetes, and Dockerfile frameworks, with terraform plan on pull requests and a manually-triggered apply.
 - [ ] Observability stack: Prometheus and Grafana.
 
